@@ -1,7 +1,7 @@
 LeagueSharp Assemblies
 ===========
 
-I do not make script I just add stuff to them if they are missing thingsI would like.
+I do not make script I just add stuff to them if they are missing things I would like.
 
 @Hellsing https://github.com/Hellsing/LeagueSharp
 
