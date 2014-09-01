@@ -72,7 +72,8 @@ namespace VeigarEndboss
         private static void Game_OnGameUpdate(EventArgs args)
         {
             // Auto stack Q
-            BalefulStrike.AutoFarmMinions = menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active;
+            if(menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active)
+                BalefulStrike.AutoFarmMinions = true;
             // Auto W on stunned
             DarkMatter.AutoCastStunned = menu.SubMenu("misc").Item("miscAutoW").GetValue<bool>();
 
@@ -210,7 +211,7 @@ namespace VeigarEndboss
         private static void SetuptMenu()
         {
             // Create menu
-            menu = new Menu(champName, "Veigar Endboss' " + champName, true);
+            menu = new Menu("[Hellsing] " + champName, "hells" + champName, true);
 
             // Target selector
             Menu targetSelector = new Menu("Target Selector", "ts");
@@ -248,7 +249,11 @@ namespace VeigarEndboss
 
             // Misc
             Menu misc = new Menu("Misc", "misc");
+<<<<<<< HEAD
             misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Toggle, true)));
+=======
+            misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
+>>>>>>> origin/master
             misc.AddItem(new MenuItem("miscAutoW", "Auto W on stunned").SetValue(true));
             menu.AddSubMenu(misc);
 
