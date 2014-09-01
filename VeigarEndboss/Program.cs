@@ -210,7 +210,7 @@ namespace VeigarEndboss
         private static void SetuptMenu()
         {
             // Create menu
-            menu = new Menu("[Hellsing] " + champName, "hells" + champName, true);
+            menu = new Menu(champName, "Veigar Endboss' " + champName, true);
 
             // Target selector
             Menu targetSelector = new Menu("Target Selector", "ts");
