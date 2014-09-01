@@ -208,6 +208,14 @@ namespace VeigarEndboss
                 }
             }
 
+            if (!Q.IsReady() && comboResult2.Killable)
+            {
+                if (R.IsReady() && R.InRange(target.ServerPosition))
+                {
+                    R.CastOnUnit(target);
+                }
+            }
+
             if (comboResult3.Killable && !comboResult1.Killable && !comboResult2.Killable)
             {
                 if (R.IsReady() && R.InRange(target.ServerPosition) && Q.IsReady() && Q.InRange(target.ServerPosition))
