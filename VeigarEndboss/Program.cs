@@ -24,6 +24,10 @@ namespace VeigarEndboss
         private static Orbwalking.Orbwalker OW;
 
         private static readonly List<DamageLib.SpellType> mainCombo = new List<DamageLib.SpellType>();
+        private static readonly List<DamageLib.SpellType> mainComboks1 = new List<DamageLib.SpellType>();
+        private static readonly List<DamageLib.SpellType> mainComboks2 = new List<DamageLib.SpellType>();
+        private static readonly List<DamageLib.SpellType> mainComboks3 = new List<DamageLib.SpellType>();
+        private static readonly List<DamageLib.SpellType> mainComboks4 = new List<DamageLib.SpellType>();
 
         public static void Main(string[] args)
         {
@@ -57,6 +61,18 @@ namespace VeigarEndboss
             mainCombo.Add(DamageLib.SpellType.R);
             mainCombo.Add(DamageLib.SpellType.IGNITE);
 
+            // Define Q dmg
+            mainComboks1.Add(DamageLib.SpellType.Q);
+            // Define R dmg
+            mainComboks2.Add(DamageLib.SpellType.R);
+            // Define Q+R dmg
+            mainComboks3.Add(DamageLib.SpellType.Q);
+            mainComboks3.Add(DamageLib.SpellType.R);
+            // Define DFG+Q+R dmg
+            mainComboks4.Add(DamageLib.SpellType.DFG);
+            mainComboks4.Add(DamageLib.SpellType.Q);
+            mainComboks4.Add(DamageLib.SpellType.R);
+
             // Setup menu
             SetuptMenu();
 
@@ -71,7 +87,8 @@ namespace VeigarEndboss
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-
+            // Auto stack Q
+            BalefulStrike.AutoFarmMinions = menu.SubMenu("misc").Item("miscStackQ").GetValue<KeyBind>().Active && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active;
             // Auto W on stunned
             DarkMatter.AutoCastStunned = menu.SubMenu("misc").Item("miscAutoW").GetValue<bool>();
 
@@ -84,9 +101,9 @@ namespace VeigarEndboss
             // WaveClear
             if (menu.SubMenu("waveClear").Item("waveActive").GetValue<KeyBind>().Active)
                 OnWaveClear();
-            // Auto stack Q
-            if(menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active)
-                OnAutoQ();
+            // KillSteal
+            if (menu.SubMenu("misc").Item("ksActive").GetValue<KeyBind>().Active)
+                OnKillSteal();
         }
 
         private static void OnCombo()
@@ -163,6 +180,54 @@ namespace VeigarEndboss
                 }
             }
         }
+
+        private static void OnKillSteal()
+        {
+            var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
+            if (target == null)
+                return;
+
+            var comboResult1 = Combo.CalculateResult(target, mainComboks1);
+            var comboResult2 = Combo.CalculateResult(target, mainComboks2);
+            var comboResult3 = Combo.CalculateResult(target, mainComboks3);
+            var comboResult4 = Combo.CalculateResult(target, mainComboks4);
+
+            if (comboResult1.Killable)
+            {
+                if (Q.IsReady() && Q.InRange(target.ServerPosition))
+                {
+                    Q.CastOnUnit(target);
+                }
+            }
+
+            if (comboResult2.Killable && !comboResult1.Killable)
+            {
+                if (R.IsReady() && R.InRange(target.ServerPosition))
+                {
+                    R.CastOnUnit(target);
+                }
+            }
+
+            if (comboResult3.Killable && !comboResult1.Killable && !comboResult2.Killable)
+            {
+                if (R.IsReady() && R.InRange(target.ServerPosition) && Q.IsReady() && Q.InRange(target.ServerPosition))
+                {
+                    Q.CastOnUnit(target);
+                    R.CastOnUnit(target);
+                }
+            }
+
+            if (comboResult4.Killable && !comboResult3.Killable && !comboResult1.Killable && !comboResult2.Killable && comboResult4.SpellUsage.Contains(DamageLib.SpellType.DFG))
+            {
+                if (R.IsReady() && R.InRange(target.ServerPosition) && Q.IsReady() && Q.InRange(target.ServerPosition))
+                {
+                    Items.UseItem(3128, target);
+                    Q.CastOnUnit(target);
+                    R.CastOnUnit(target);
+                }
+            }
+        }
+        
         private static void OnHarass()
         {
             // Mana check
@@ -195,68 +260,6 @@ namespace VeigarEndboss
                 if (farmLocation.MinionsHit >= menu.SubMenu("waveClear").Item("waveNumW").GetValue<Slider>().Value && player.Distance(farmLocation.Position) <= W.Range)
                     W.Cast(farmLocation.Position);
             }
-        }
-
-        private static void OnAutoQ()
-        {
-			private static Spell spell;
-			private static Orbwalking.Orbwalker orbwalker;
-
-			private static bool autoFarmMinions = false;
-			private static int lastNetworkId = -1;
-
-			public static bool AutoFarmMinions
-			{
-				get { return autoFarmMinions; }
-				set { autoFarmMinions = value; }
-			}
-
-			public static void Initialize(Spell spell, Orbwalking.Orbwalker orbwalker)
-			{
-				if (BalefulStrike.spell != null)
-					return;
-
-				// Apply values
-				BalefulStrike.spell = spell;
-				BalefulStrike.orbwalker = orbwalker;
-
-				// Register events
-				Game.OnGameUpdate += Game_OnGameUpdate;
-				Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
-			}
-
-			static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
-			{
-				// Deny attacking on Q'ed minions
-				if (args.Target.NetworkId == lastNetworkId)
-					args.Process = false;
-			}
-
-			private static void Game_OnGameUpdate(EventArgs args)
-			{
-				// Auto farm Q minions
-				if (spell.IsReady() && Orbwalking.CanMove(100))
-				{
-					var minions = MinionManager.GetMinions(ObjectManager.Player.Position, spell.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
-					minions.AddRange(MinionManager.GetMinions(ObjectManager.Player.Position, spell.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth));
-					foreach (var minion in minions)
-					{
-						// Predicted health
-						float predictedHealth = HealthPrediction.GetHealthPrediction(minion, (int)((minion.Distance(ObjectManager.Player) / spell.Speed) * 1000 + spell.Delay * 1000), 100);
-
-						// Calculated damage on minion
-						double damage = DamageLib.CalcMagicMinionDmg((35 + (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).Level * 45)) + (0.60 * ObjectManager.Player.FlatMagicDamageMod), minion as Obj_AI_Minion, true);
-
-						// Valid minion
-						if (predictedHealth > 0 && damage > predictedHealth)
-						{
-							spell.CastOnUnit(minion);
-							lastNetworkId = minion.NetworkId;
-							break;
-						}
-					}
-				}
-			}
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -311,6 +314,7 @@ namespace VeigarEndboss
 
             // Misc
             Menu misc = new Menu("Misc", "misc");
+            misc.AddItem(new MenuItem("ksActive", "Auto KS").SetValue(new KeyBind('H', KeyBindType.Toggle)));
             misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
             misc.AddItem(new MenuItem("miscAutoW", "Auto W on stunned").SetValue(true));
             menu.AddSubMenu(misc);
