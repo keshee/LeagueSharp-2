@@ -199,7 +199,7 @@ namespace VeigarEndboss
         private static void OnAutoQ()
         {
 			// Auto farm Q minions
-            if (menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active && Q.IsReady() && Orbwalking.CanMove(100))
+            if (Q.IsReady())
             {
                 var minions = MinionManager.GetMinions(ObjectManager.Player.Position, spell.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
                 minions.AddRange(MinionManager.GetMinions(ObjectManager.Player.Position, spell.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth));
