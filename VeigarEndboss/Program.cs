@@ -73,7 +73,7 @@ namespace VeigarEndboss
         {
             // Auto stack Q
             if(menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active)
-                BalefulStrike.AutoFarmMinions = true;
+                OnAutoQ();
             // Auto W on stunned
             DarkMatter.AutoCastStunned = menu.SubMenu("misc").Item("miscAutoW").GetValue<bool>();
 
@@ -162,7 +162,6 @@ namespace VeigarEndboss
                 }
             }
         }
-        
         private static void OnHarass()
         {
             // Mana check
@@ -194,6 +193,32 @@ namespace VeigarEndboss
 
                 if (farmLocation.MinionsHit >= menu.SubMenu("waveClear").Item("waveNumW").GetValue<Slider>().Value && player.Distance(farmLocation.Position) <= W.Range)
                     W.Cast(farmLocation.Position);
+            }
+        }
+
+        private static void OnAutoQ()
+        {
+			// Auto farm Q minions
+            if (menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active && Q.IsReady() && Orbwalking.CanMove(100))
+            {
+                var minions = MinionManager.GetMinions(ObjectManager.Player.Position, spell.Range, MinionTypes.All, MinionTeam.Enemy, MinionOrderTypes.MaxHealth);
+                minions.AddRange(MinionManager.GetMinions(ObjectManager.Player.Position, spell.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth));
+                foreach (var minion in minions)
+                {
+                    // Predicted health
+                    float predictedHealth = HealthPrediction.GetHealthPrediction(minion, (int)((minion.Distance(ObjectManager.Player) / spell.Speed) * 1000 + spell.Delay * 1000), 100);
+
+                    // Calculated damage on minion
+                    double damage = DamageLib.CalcMagicMinionDmg((35 + (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).Level * 45)) + (0.60 * ObjectManager.Player.FlatMagicDamageMod), minion as Obj_AI_Minion, true);
+
+                    // Valid minion
+                    if (predictedHealth > 0 && damage > predictedHealth)
+                    {
+                        spell.CastOnUnit(minion);
+                        lastNetworkId = minion.NetworkId;
+                        break;
+                    }
+                }
             }
         }
 
@@ -249,11 +274,7 @@ namespace VeigarEndboss
 
             // Misc
             Menu misc = new Menu("Misc", "misc");
-<<<<<<< HEAD
-            misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Toggle, true)));
-=======
             misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
->>>>>>> origin/master
             misc.AddItem(new MenuItem("miscAutoW", "Auto W on stunned").SetValue(true));
             menu.AddSubMenu(misc);
 
