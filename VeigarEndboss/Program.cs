@@ -248,7 +248,7 @@ namespace VeigarEndboss
 
             // Misc
             Menu misc = new Menu("Misc", "misc");
-            misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind('Z', KeyBindType.Toggle, true)));
+            misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Toggle, true)));
             misc.AddItem(new MenuItem("miscAutoW", "Auto W on stunned").SetValue(true));
             menu.AddSubMenu(misc);
 
