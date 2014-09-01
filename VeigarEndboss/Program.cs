@@ -72,7 +72,8 @@ namespace VeigarEndboss
         private static void Game_OnGameUpdate(EventArgs args)
         {
             // Auto stack Q
-            BalefulStrike.AutoFarmMinions = menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active;
+            if(menu.SubMenu("misc").Item("miscStackQ").GetValue<bool>() && !menu.SubMenu("combo").Item("comboActive").GetValue<KeyBind>().Active)
+                BalefulStrike.AutoFarmMinions = true;
             // Auto W on stunned
             DarkMatter.AutoCastStunned = menu.SubMenu("misc").Item("miscAutoW").GetValue<bool>();
 
