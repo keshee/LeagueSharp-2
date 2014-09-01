@@ -210,7 +210,7 @@ namespace VeigarEndboss
         private static void SetuptMenu()
         {
             // Create menu
-            menu = new Menu(champName, "Veigar Endboss' " + champName, true);
+            menu = new Menu("[Hellsing] " + champName, "hells" + champName, true);
 
             // Target selector
             Menu targetSelector = new Menu("Target Selector", "ts");
@@ -248,7 +248,7 @@ namespace VeigarEndboss
 
             // Misc
             Menu misc = new Menu("Misc", "misc");
-            misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind('Z', KeyBindType.Toggle, true)));
+            misc.AddItem(new MenuItem("miscStackQ", "Auto stack Q").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
             misc.AddItem(new MenuItem("miscAutoW", "Auto W on stunned").SetValue(true));
             menu.AddSubMenu(misc);
 
