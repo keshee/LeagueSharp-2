@@ -42,7 +42,7 @@ namespace MapHack
             Drawing.OnDraw += OnDraw;
             Game.PrintChat(
                 string.Format(
-                    "<font color='#F7A100'>{0} v{1} loaded #.</font>",
+                    "<font color='#F7A100'>{0} v{1} loaded.</font>",
                     Assembly.GetExecutingAssembly().GetName().Name,
                     Assembly.GetExecutingAssembly().GetName().Version
                     )
@@ -88,11 +88,14 @@ namespace MapHack
             {
                 foreach (Hero hero in _heroes)
                 {
-                    if (!hero.Dead)
+                    if (!hero.Dead && !hero.Visible)
                     {
                         Vector2 pos = Drawing.WorldToMinimap(hero.LastPosition);
-                        Drawing.DrawText((Drawing.Width*10, Drawing.Height*10, pos.X - Convert.ToInt32(hero.Name.Substring(0, 3).Length*5), pos.Y - 5,
-                            System.Drawing.Color.Lime,
+                        Drawing.DrawText(pos.X - Convert.ToInt32(hero.Name.Substring(0, 3).Length*5 - 2), pos.Y - 6,
+                            System.Drawing.Color.Black,
+                            hero.Name.Substring(0, 3));
+                        Drawing.DrawText(pos.X - Convert.ToInt32(hero.Name.Substring(0, 3).Length*5), pos.Y - 7,
+                            System.Drawing.Color.Red,
                             hero.Name.Substring(0, 3));
                     }
                 }
