@@ -242,7 +242,7 @@ namespace JungleTimers
                             TimeSpan time = TimeSpan.FromSeconds(minionCamp.RespawnTimer.TotalSeconds - delta);
                             Vector2 pos = Drawing.WorldToMinimap(minionCamp.Position);
                             string display = string.Format("{0}:{1:D2}", time.Minutes, time.Seconds);
-                            Drawing.DrawText(pos.X - display.Length*3 + 1, pos.Y - 4, Color.Black, display);
+                            Drawing.DrawText(pos.X - display.Length*3 + 5, pos.Y - 4, Color.Black, display);
                             Drawing.DrawText(pos.X - display.Length*3, pos.Y - 5, Color.Yellow, display);
                         }
                     }
