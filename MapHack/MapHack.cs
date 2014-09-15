@@ -91,7 +91,7 @@ namespace MapHack
                     if (!hero.Dead && !hero.Visible)
                     {
                         Vector2 pos = Drawing.WorldToMinimap(hero.LastPosition);
-                        Drawing.DrawText(pos.X - Convert.ToInt32(hero.Name.Substring(0, 3).Length*5 - 2), pos.Y - 6,
+                        Drawing.DrawText(pos.X - Convert.ToInt32(hero.Name.Substring(0, 3).Length*5 - 1), pos.Y - 6,
                             System.Drawing.Color.Black,
                             hero.Name.Substring(0, 3));
                         Drawing.DrawText(pos.X - Convert.ToInt32(hero.Name.Substring(0, 3).Length*5), pos.Y - 7,
