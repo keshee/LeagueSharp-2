@@ -38,6 +38,7 @@ namespace Skin_Changer
             numSkins.Add("Anivia", 5);
             numSkins.Add("Annie", 8);
             numSkins.Add("Ashe", 6);
+            numSkins.Add("Azir", 2);
             numSkins.Add("Blitzcrank", 7);
             numSkins.Add("Brand", 4);
             numSkins.Add("Braum", 1);
