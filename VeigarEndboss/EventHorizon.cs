@@ -102,7 +102,7 @@ namespace VeigarEndboss
         private static CalculatedPosition GetSinglePosition(Obj_AI_Hero target)
         {
             var prediction = Prediction.GetPrediction(target, 0.2f);
-            if (prediction.Hitchance == HitChance.High && prediction.Hitchance != HitChance.Immobile)
+            if (prediction.Hitchance >= HitChance.High && prediction.Hitchance != HitChance.Immobile)
                 return new CalculatedPosition(prediction.UnitPosition.To2D() + Vector2.Normalize(ObjectManager.Player.Position.To2D() - prediction.UnitPosition.To2D()) * radius, 1);
 
             return CalculatedPosition.CreateInvalidPosition();
@@ -122,7 +122,7 @@ namespace VeigarEndboss
                 var prediction2 = Prediction.GetPrediction(target2, 0.2f);
 
                 // Prediction validation
-                if (prediction.Hitchance != HitChance.High || prediction.Hitchance == HitChance.Immobile || prediction2.Hitchance != HitChance.High || prediction2.Hitchance == HitChance.Immobile)
+                if (prediction.Hitchance >= HitChance.High || prediction.Hitchance >= HitChance.Immobile || prediction2.Hitchance >= HitChance.High || prediction2.Hitchance >= HitChance.Immobile)
                     continue;
 
                 // Positions
