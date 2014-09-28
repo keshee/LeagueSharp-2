@@ -36,6 +36,7 @@ Lizzaran
 https://github.com/Lizzaran/LeagueSharp
 <h5>MapHack:</h5>
 - Added Black text for a shadow effect to make it easier on my eyes.
+
 <h5>JungleTimers:</h5>
 - Added Black text for a shadow effect to make it easier on my eyes.
 
