@@ -8,7 +8,7 @@ using SharpDX;
 
 using Color = System.Drawing.Color;
 
-namespace BaseUlt2
+namespace BaseUlt22
 {
     internal class Program
     {
@@ -43,13 +43,13 @@ namespace BaseUlt2
 
         private static void Game_OnGameStart(EventArgs args)
         {
-            (_menu = new Menu("BaseUlt2", "BaseUlt", true)).AddToMainMenu();
-            _menu.AddItem(new MenuItem("showRecalls", "Show Recalls").SetValue(true));
-            _menu.AddItem(new MenuItem("baseUlt", "Base Ult").SetValue(true));
-            _menu.AddItem(new MenuItem("extraDelay", "Extra Delay").SetValue(new Slider(0, -2000, 2000)));
-            _menu.AddItem(new MenuItem("panicKey", "Panic key (hold for disable)").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
-            _menu.AddItem(new MenuItem("regardlessKey", "No timelimit (hold)").SetValue(new KeyBind(17, KeyBindType.Press))); //17 == ctrl
-            _menu.AddItem(new MenuItem("debugMode", "Debug (developer only)").SetValue(false).DontSave());
+            (_menu = new Menu("BaseUlt22", "BaseUlt2", true)).AddToMainMenu();
+            _menu.AddItem(new MenuItem("showRecalls2", "Show Recalls").SetValue(true));
+            _menu.AddItem(new MenuItem("baseUlt2", "Base Ult").SetValue(true));
+            _menu.AddItem(new MenuItem("extraDelay2", "Extra Delay").SetValue(new Slider(0, -2000, 2000)));
+            _menu.AddItem(new MenuItem("panicKey2", "Panic key (hold for disable)").SetValue(new KeyBind(32, KeyBindType.Press))); //32 == space
+            _menu.AddItem(new MenuItem("regardlessKey2", "No timelimit (hold)").SetValue(new KeyBind(17, KeyBindType.Press))); //17 == ctrl
+            _menu.AddItem(new MenuItem("debugMode2", "Debug (developer only)").SetValue(false).DontSave());
 
             var teamUlt = _menu.AddSubMenu(new Menu("Team Baseult Friends", "TeamUlt"));
 
@@ -79,7 +79,7 @@ namespace BaseUlt2
             if (_compatibleChamp)
                 Game.OnGameUpdate += Game_OnGameUpdate;
 
-            Game.PrintChat("<font color=\"#1eff00\">BaseUlt2 -</font> <font color=\"#00BFFF\">Loaded (compatible champ: " + (_compatibleChamp ? "Yes" : "No") + ")</font>");
+            Game.PrintChat("<font color=\"#1eff00\">BaseUlt2.2 -</font> <font color=\"#00BFFF\">Loaded (compatible champ: " + (_compatibleChamp ? "Yes" : "No") + ")</font>");
         }
 
         private static void Game_OnGameUpdate(EventArgs args)
@@ -89,7 +89,7 @@ namespace BaseUlt2
             foreach (PlayerInfo playerInfo in _playerInfo.Where(x => x.Champ.IsVisible))
                 playerInfo.LastSeen = time;
 
-            if (!_menu.Item("baseUlt").GetValue<bool>()) return;
+            if (!_menu.Item("baseUlt2").GetValue<bool>()) return;
 
             foreach (PlayerInfo playerInfo in _playerInfo.Where(x =>
                 x.Champ.IsValid &&
@@ -134,7 +134,7 @@ namespace BaseUlt2
                     continue;
 
                 //increase timeneeded if it should arrive earlier, decrease if later
-                float timeneeded = Helper.GetSpellTravelTime(champ, UltInfo[champ.ChampionName].Speed, UltInfo[champ.ChampionName].Delay, _enemySpawnPos) - (_menu.Item("extraDelay").GetValue<Slider>().Value + 65);
+                float timeneeded = Helper.GetSpellTravelTime(champ, UltInfo[champ.ChampionName].Speed, UltInfo[champ.ChampionName].Delay, _enemySpawnPos) - (_menu.Item("extraDelay2").GetValue<Slider>().Value + 65);
 
                 if (timeneeded - playerInfo.GetRecallCountdown() > 60)
                     continue;
@@ -150,7 +150,7 @@ namespace BaseUlt2
 
             float targetHealth = Helper.GetTargetHealth(playerInfo);
 
-            if (!shoot || _menu.Item("panicKey").GetValue<KeyBind>().Active)
+            if (!shoot || _menu.Item("panicKey2").GetValue<KeyBind>().Active)
             {
                 if (_menu.Item("debugMode").GetValue<bool>())
                     Game.PrintChat("!SHOOT/PANICKEY {0} (Health: {1} TOTAL-UltDamage: {2})", playerInfo.Champ.ChampionName, targetHealth, totalUltDamage);
@@ -189,7 +189,7 @@ namespace BaseUlt2
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (!_menu.Item("showRecalls").GetValue<bool>()) return;
+            if (!_menu.Item("showRecalls2").GetValue<bool>()) return;
 
             int index = -1;
 

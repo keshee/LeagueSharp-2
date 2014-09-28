@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LeagueSharp;
 using LeagueSharp.Common;
 
-namespace BaseUlt2
+namespace BaseUlt22
 {
     internal class PlayerInfo
     {

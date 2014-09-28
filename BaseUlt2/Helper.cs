@@ -7,7 +7,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using Collision = LeagueSharp.Common.Collision;
 
-namespace BaseUlt2
+namespace BaseUlt22
 {
     internal class Helper
     {
