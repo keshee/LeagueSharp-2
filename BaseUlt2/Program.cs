@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -66,7 +66,7 @@ namespace BaseUlt22
 
             _enemySpawnPos = ObjectManager.Get<GameObject>().First(x => x.Type == GameObjectType.obj_SpawnPoint && x.Team != ObjectManager.Player.Team).Position;
 
-            Map = Utility.Map.GetMap();
+            Map = Utility.Map.GetMap()._MapType;
 
             _playerInfo = _enemyTeam.Select(x => new PlayerInfo(x)).ToList();
             _playerInfo.Add(new PlayerInfo(ObjectManager.Player));
