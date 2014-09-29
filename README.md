@@ -1,7 +1,7 @@
 LeagueSharp Assemblies
 ===========
 
-I do not make script I just add stuff to them if they are missing things I would like.
+I do not make assemblys, I change things to fit what I want.
 
 Hellsing
 ===========
