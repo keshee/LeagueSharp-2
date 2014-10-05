@@ -9,8 +9,8 @@ https://github.com/LeagueSharp/LeagueSharpCommon
 <h5>LeaguSharp.Common:</h5>
 - Moved location to better suite my wants and need.
 - Added DamageLib.cs back so you can use outdated assemblys
+- For the grey menu style replace your "Leaguesharp\System\CommonLibMenuConfig\ - MenuSettings.xml" with this http://puu.sh/bZPUs/3ae3318a76.txt
 
-For the grey menu style replace your "Leaguesharp\System\CommonLibMenuConfig\ - MenuSettings.xml" with this http://puu.sh/bZPUs/3ae3318a76.txt
 ![alt tag](http://puu.sh/bZNsr/e568433e73.jpg)
 
 
