@@ -1,4 +1,4 @@
-﻿#region LICENSE
+#region LICENSE
 
 /*
  Copyright 2014 - 2014 LeagueSharp
@@ -297,8 +297,10 @@ namespace LeagueSharp.Common
                 if (!DisableNextAttack)
                 {
                     Player.IssueOrder(GameObjectOrder.AttackUnit, target);
-                    LastAATick = Environment.TickCount + Game.Ping / 2;
-
+                    if (!(target is Obj_AI_Hero))
+                    {
+                        LastAATick = Environment.TickCount + Game.Ping / 2;
+                    }
                     return;
                 }
             }
