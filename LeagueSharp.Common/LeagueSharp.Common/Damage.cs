@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+
 #endregion
 
 namespace LeagueSharp.Common
@@ -33,6 +35,7 @@ namespace LeagueSharp.Common
         public SpellSlot Slot;
         public SpellDamageDelegate Damage;
         public Damage.DamageType DamageType;
+        public double CalculatedDamage = 0d;
 
         public DamageSpell()
         {
@@ -902,7 +905,7 @@ namespace LeagueSharp.Common
                 //Q
                 new DamageSpell{Slot = SpellSlot.Q, DamageType = DamageType.Physical, Damage = (source, target, level) => new double[]{50, 80, 110, 140, 170}[level] + 0.9 * source.FlatPhysicalDamageMod },
                 //Q - 2nd
-                new DamageSpell{Slot = SpellSlot.Q, DamageType = DamageType.Physical, Damage = (source, target, level) => new double[]{50, 80, 110, 140, 170}[level] + 0.9 * source.FlatPhysicalDamageMod + 0.08 * (target.MaxHealth - target.Health)},
+                new DamageSpell{Slot = SpellSlot.Q, Stage = 1, DamageType = DamageType.Physical, Damage = (source, target, level) => new double[]{50, 80, 110, 140, 170}[level] + 0.9 * source.FlatPhysicalDamageMod + 0.08 * (target.MaxHealth - target.Health)},
                 //E
                 new DamageSpell{Slot = SpellSlot.E, DamageType = DamageType.Magical, Damage = (source, target, level) => new double[]{60, 95, 130, 165, 200}[level] + 1 * source.FlatPhysicalDamageMod },
                 //R
@@ -1696,7 +1699,27 @@ namespace LeagueSharp.Common
 
         public static double GetItemDamage(this Obj_AI_Hero source, Obj_AI_Base target, DamageItems item)
         {
-            //TODO
+            switch (item)
+            {
+                case DamageItems.Bilgewater:
+                    return source.CalcDamage(target, DamageType.Magical, 100);
+                case DamageItems.BlackFireTorch:
+                    return source.CalcDamage(target, DamageType.Magical, target.MaxHealth * 0.2);
+                case DamageItems.Botrk:
+                    return source.CalcDamage(target, DamageType.Physical, target.MaxHealth * 0.1);
+                case DamageItems.Dfg:
+                    return source.CalcDamage(target, DamageType.Magical, target.MaxHealth * 0.15);
+                case DamageItems.FrostQueenClaim:
+                    return source.CalcDamage(target, DamageType.Magical, 50 + 5 * source.Level);
+                case DamageItems.Hexgun: 
+                    return source.CalcDamage(target, DamageType.Magical, 150 + 0.4 * source.FlatMagicDamageMod);
+                case DamageItems.Hydra:
+                    return source.CalcDamage(target, DamageType.Physical, source.BaseAttackDamage + source.FlatPhysicalDamageMod);
+                case DamageItems.OdingVeils:
+                    return source.CalcDamage(target, DamageType.Magical, 200);
+                case DamageItems.Tiamat:
+                    return source.CalcDamage(target, DamageType.Physical, source.BaseAttackDamage + source.FlatPhysicalDamageMod);
+            }
             return 1d;
         }
 
@@ -1753,26 +1776,6 @@ namespace LeagueSharp.Common
             return CalcPhysicalDamage(source, target, result) * k - reduction;
         }
 
-        public static double GetSpellDamage(this Obj_AI_Base source, Obj_AI_Base target, string spellName)
-        {
-            if (Orbwalking.IsAutoAttack(spellName))
-            {
-                return GetAutoAttackDamage(source, target, true);
-            }
-
-            if (source is Obj_AI_Hero)
-                foreach (var spell in source.Spellbook.Spells)
-                {
-                    if (String.Equals(spell.Name, spellName, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        return GetSpellDamage((Obj_AI_Hero)source, target, spell.Slot);
-                    }
-                }
-
-            return 0d;
-        }
-
-
         /// <summary>
         /// Calculates the combo damage of the given spell combo on the given target.
         /// </summary>
@@ -1809,25 +1812,73 @@ namespace LeagueSharp.Common
             return GetComboDamage(source, target, spellCombo) > target.Health;    
         }
 
-        public static double GetSpellDamage(this Obj_AI_Hero source, Obj_AI_Base target, SpellSlot slot, int stage = 0)
+        public static DamageSpell GetDamageSpell(this Obj_AI_Base source, Obj_AI_Base target, string spellName)
+        {
+            if (Orbwalking.IsAutoAttack(spellName))
+            {
+                return new DamageSpell 
+                { 
+                    DamageType = DamageType.Physical,
+                    CalculatedDamage = GetAutoAttackDamage(source, target, true),
+                };
+            }
+
+            if (source is Obj_AI_Hero)
+                foreach (var spell in source.Spellbook.Spells)
+                {
+                    if (String.Equals(spell.Name, spellName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return GetDamageSpell((Obj_AI_Hero)source, target, spell.Slot);
+                    }
+                }
+
+            return null;
+        }
+
+        public static DamageSpell GetDamageSpell(this Obj_AI_Hero source, Obj_AI_Base target, SpellSlot slot, int stage = 0)
         {
             if (Spells.ContainsKey(source.ChampionName))
             {
-                var spell = Spells[source.ChampionName].First(s => s.Slot == slot && stage == s.Stage);
+                var spell = Spells[source.ChampionName].FirstOrDefault(s => s.Slot == slot && stage == s.Stage);
 
                 if (spell == null)
                 {
-                    spell = Spells[source.ChampionName].First(s => s.Slot == slot);
+                    spell = Spells[source.ChampionName].FirstOrDefault(s => s.Slot == slot);
                 }
 
                 if (spell != null)
                 {
-                    var rawDamage = spell.Damage(source, target, source.Spellbook.GetSpell(slot).Level - 1);
-                    return CalcDamage(source, target, spell.DamageType, rawDamage);
+                    var rawDamage = spell.Damage(source, target, Math.Max(1, Math.Min(source.Spellbook.GetSpell(slot).Level - 1, 6)));
+                    spell.CalculatedDamage = CalcDamage(source, target, spell.DamageType, rawDamage);
+                    return spell;
                 }
             }
 
             //Spell not found.
+            return null;
+        }
+
+        public static double GetSpellDamage(this Obj_AI_Base source, Obj_AI_Base target, string spellName)
+        {
+            var spell = GetDamageSpell(source, target, spellName);
+
+            if (spell != null)
+            {
+                return spell.CalculatedDamage;
+            }
+
+            return 0d;
+        }
+
+        public static double GetSpellDamage(this Obj_AI_Hero source, Obj_AI_Base target, SpellSlot slot, int stage = 0)
+        {
+            var spell = GetDamageSpell(source, target, slot, stage);
+            
+            if(spell != null)
+            {
+                return spell.CalculatedDamage;
+            }
+
             return 0d;
         }
 

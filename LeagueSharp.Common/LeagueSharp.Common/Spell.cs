@@ -380,11 +380,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public bool Cast()
         {
-            if (IsReady())
-            {
-                return ObjectManager.Player.Spellbook.CastSpell(Slot);
-            }
-            return false;
+            return IsReady() && ObjectManager.Player.Spellbook.CastSpell(Slot);
         }
 
         /// <summary>
@@ -392,7 +388,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public void CastOnUnit(Obj_AI_Base unit, bool packetCast = false)
         {
-            if (From.Distance(unit.ServerPosition) > Range)
+            if (!IsReady() || From.Distance(unit.ServerPosition) > Range)
             {
                 return;
             }
@@ -548,6 +544,14 @@ namespace LeagueSharp.Common
         public float GetDamage(Obj_AI_Base target, int stage = 0)
         {
             return (float)ObjectManager.Player.GetSpellDamage(target, Slot, stage);
+        }
+
+        /// <summary>
+        /// Gets the damage that the skillshot will deal to the target using the damage lib and returns if the target is killable or not.
+        /// </summary>
+        public bool IsKillable(Obj_AI_Base target, int stage = 0)
+        {
+            return ObjectManager.Player.GetSpellDamage(target, Slot, stage) > target.Health;
         }
 
         /// <summary>
