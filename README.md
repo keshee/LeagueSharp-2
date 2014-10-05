@@ -3,6 +3,16 @@ LeagueSharp Assemblies
 
 I do not make assemblys, I change things to fit what I want.
 
+LeaguSharpCommon
+===========
+https://github.com/LeagueSharp/LeagueSharpCommon
+<h5>LeaguSharp.Common:</h5>
+- Moved location to better suite my wants and need.
+- Added DamageLib.cs back so you can use outdated assemblys
+
+
+
+
 Hellsing
 ===========
 https://github.com/Hellsing/LeagueSharp
@@ -39,15 +49,6 @@ https://github.com/Lizzaran/LeagueSharp
 
 <h5>JungleTimers:</h5>
 - Added Black text for a shadow effect to make it easier on my eyes.
-
-
-
-
-LeaguSharpCommon
-===========
-https://github.com/LeagueSharp/LeagueSharpCommon
-<h5>LeaguSharp.Common:</h5>
-- Moved location to better suite my wants and need.
 
 
 
