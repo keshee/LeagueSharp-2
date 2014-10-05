@@ -70,7 +70,7 @@ namespace Skin_Changer
             numSkins.Add("Jax", 8);
             numSkins.Add("Jayce", 2);
             numSkins.Add("Jinx", 1);
-            numSkins.Add("Karma", 3);
+            numSkins.Add("Karma", 4);
             numSkins.Add("Karthus", 4);
             numSkins.Add("Kassadin", 4);
             numSkins.Add("Katarina", 7);
