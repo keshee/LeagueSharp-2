@@ -1,4 +1,4 @@
-#region LICENSE
+﻿#region LICENSE
 /*
  Copyright 2014 - 2014 LeagueSharp
  Orbwalking.cs is part of LeagueSharp.Common.
@@ -2084,3 +2084,4 @@ namespace LeagueSharp.Common
     }
 
 }
+
