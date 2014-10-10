@@ -549,6 +549,9 @@ namespace LeagueSharp.Common
 
             Spells.Add("Draven", new List<DamageSpell>
             {
+                //Q
+                new DamageSpell{Slot = SpellSlot.Q, DamageType = DamageType.Physical, Damage = (source, target, level) => new double[]{45, 55, 65, 75, 85}[level]/100 * (source.BaseAttackDamage + source.FlatPhysicalDamageMod)},
+
                 //E
                 new DamageSpell{Slot = SpellSlot.E, DamageType = DamageType.Physical, Damage = (source, target, level) => new double[]{70, 105, 140, 175, 210}[level] + 0.5 * source.FlatPhysicalDamageMod},
                 //R
@@ -794,7 +797,7 @@ namespace LeagueSharp.Common
                 new DamageSpell{Slot = SpellSlot.W, Stage = 1, DamageType = DamageType.Magical, Damage = (source, target, level) => new double[]{60, 140, 220, 300}[level] + 0.6 * source.FlatMagicDamageMod },
             });
 
-            Spells.Add("Khartus", new List<DamageSpell>
+            Spells.Add("Karthus", new List<DamageSpell>
             {
                 //Q
                 new DamageSpell{Slot = SpellSlot.Q, DamageType = DamageType.Magical, Damage = (source, target, level) => (new double[]{40, 60, 80, 100, 120}[level] + 0.3 * source.FlatMagicDamageMod) * 2 },

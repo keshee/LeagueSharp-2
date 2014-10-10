@@ -189,7 +189,7 @@ namespace LeagueSharp.Common
         {
             if (!IsCharging && Environment.TickCount - _chargedReqSentT > 400 + Game.Ping)
             {
-                Cast();
+                ObjectManager.Player.Spellbook.CastSpell(SpellSlot.Q);
                 _chargedReqSentT = Environment.TickCount;
             }
         }
@@ -348,7 +348,7 @@ namespace LeagueSharp.Common
                 {
                     Packet.C2S.ChargedCast.Encoded(
                         new Packet.C2S.ChargedCast.Struct(
-                            (SpellSlot) (0x80 + (byte) Slot), prediction.CastPosition.X, ObjectManager.Player.ServerPosition.Z,
+                            (SpellSlot) ((byte) Slot), prediction.CastPosition.X, ObjectManager.Player.ServerPosition.Z,
                             prediction.CastPosition.Y)).Send();
                 }
                 else
@@ -380,7 +380,7 @@ namespace LeagueSharp.Common
         /// </summary>
         public bool Cast()
         {
-            return IsReady() && ObjectManager.Player.Spellbook.CastSpell(Slot);
+            return IsReady() && ObjectManager.Player.Spellbook.CastSpell(Slot, ObjectManager.Player);
         }
 
         /// <summary>
